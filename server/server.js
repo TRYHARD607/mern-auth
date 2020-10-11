@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken'
 
 import mongooseService from './services/mongoose'
 import passportJWT from './services/passport.js'
+import auth from './middleware/auth'
 
 import config from './config'
 import Html from '../client/html'
@@ -51,6 +52,10 @@ const middleware = [
 passport.use('jwt', passportJWT.jwt)
 
 middleware.forEach((it) => server.use(it))
+
+server.get('/api/v1/user-info', auth(['admin']), (req, res) => {
+  res.json({ status: 'Hello admin' })
+})
 
 server.post('/api/v1/auth', async (req, res) => {
   console.log(req.body)

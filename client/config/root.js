@@ -12,6 +12,7 @@ import store, { history } from '../redux'
 import NotFound from '../components/404'
 import LoginForm from '../components/login'
 import PrivateComponent from '../components/private-route'
+import AdminComponent from '../components/admin-route'
 
 import Startup from './startup'
 
@@ -26,6 +27,21 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const auth = useSelector((s) => s.auth)
   const func = (props) =>
     !!auth.user && !!auth.token ? (
+      <Component {...props} />
+    ) : (
+      <Redirect
+        to={{
+          pathname: '/login'
+        }}
+      />
+    )
+  return <Route {...rest} render={func} />
+}
+
+const AdminRoute = ({ component: Component, ...rest }) => {
+  const auth = useSelector((s) => s.auth)
+  const func = (props) =>
+    !!auth.user && !!auth.token && auth.user.role.includes('admin') ? (
       <Component {...props} />
     ) : (
       <Redirect
@@ -75,6 +91,7 @@ const RootComponent = (props) => {
             <OnlyAnonymousRoute exact path="/login" component={() => <LoginForm />} />
             <Route exact path="/" component={() => <LoginForm />} />
             <PrivateRoute exact path="/private" component={() => <PrivateComponent />} />
+            <AdminRoute exact path="/admin" component={() => <AdminComponent />} />
             <Route component={() => <NotFound />} />
           </Switch>
         </Startup>

@@ -68,3 +68,18 @@ export function trySignIn() {
       })
   }
 }
+
+export function tryGetUserInfo() {
+  return () => {
+    try {
+      fetch('/api/v1/user-info')
+        .then((r) => r.json())
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((err) => err)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
